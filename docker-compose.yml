@@ -19,7 +19,7 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-    command: sh -c "npx sequelize-cli db:migrate && npm start"
+    command: sh -c "./wait-for-it.sh db:3306 -- npx sequelize-cli db:migrate && npm start"
 
   db:
     image: mysql:8.0
