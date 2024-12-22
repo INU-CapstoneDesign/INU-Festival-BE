@@ -27,10 +27,8 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_USER : ${MYSQL_USER}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: inu_festival_be
-      MYSQL_PASSWORD : root1!
     volumes:
       - db_data:/var/lib/mysql
     command:
