@@ -1,10 +1,10 @@
 const express = require('express');
-const mecab = require('mecab-ya');
+// const mecab = require('mecab-ya');
 const router = express.Router();
 const db = require('../../models');
 
 const { Keywords } = db;     // db.Keyword
-const { OneLine } = db;     // db.OneLine
+// const { OneLine } = db;     // db.OneLine
 
 // 임시 키워드 조ㅣ
 router.get('/keywords', async (req, res) => {
@@ -14,7 +14,7 @@ router.get('/keywords', async (req, res) => {
         });
 
         const keywordsResponse = keywords.map(keyword => ({
-            id: String(keyword.id),
+            id: keyword.id,
             keyword: keyword.keyword,
         }));
 
