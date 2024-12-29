@@ -6,24 +6,24 @@ const db = require('../../models');
 const { Keywords } = db;     // db.Keyword
 // const { OneLine } = db;     // db.OneLine
 
-// 임시 키워드 조ㅣ
-router.get('/keywords', async (req, res) => {
-    try {
-        const keywords = await Keywords.findAll({
-            attributes: ['id', 'keyword'],
-        });
+// // 임시 키워드 조ㅣ
+// router.get('/keywords', async (req, res) => {
+//     try {
+//         const keywords = await Keywords.findAll({
+//             attributes: ['id', 'keyword'],
+//         });
 
-        const keywordsResponse = keywords.map(keyword => ({
-            id: keyword.id,
-            keyword: keyword.keyword,
-        }));
+//         const keywordsResponse = keywords.map(keyword => ({
+//             id: keyword.id,
+//             keyword: keyword.keyword,
+//         }));
 
-        res.status(200).json({ keywords: keywordsResponse });
-    } catch (error) {
-        console.error('키워드를 가져오는 중 오류 발생:', error);
-        res.status(500).json({ error: '서버 오류가 발생했습니다.' });
-    }
-});
+//         res.status(200).json({ keywords: keywordsResponse });
+//     } catch (error) {
+//         console.error('키워드를 가져오는 중 오류 발생:', error);
+//         res.status(500).json({ error: '서버 오류가 발생했습니다.' });
+//     }
+// });
 
 /* 
 메인 페이지 - 한 줄 외치기
@@ -183,17 +183,17 @@ router.get('/keywords', async (req, res) => {
 // clearDB();
 
 // // GET /keywords
-// router.get('/', async (req, res) => {
-//     try {
-//         // DB에서 저장된 키워드 가져오기
-//         const keywords = await Keywords.findAll({ attributes: ['id', 'keyword'] });
+router.get('/', async (req, res) => {
+    try {
+        // DB에서 저장된 키워드 가져오기
+        const keywords = await Keywords.findAll({ attributes: ['id', 'keyword'] });
 
-//         // 응답으로 키워드 보내기
-//         res.status(200).json({ keywords });
-//     } catch (err) {
-//         console.error(`error : ${err}`);
-//         res.status(500).json({ err });
-//     }
-// });
+        // 응답으로 키워드 보내기
+        res.status(200).json({ keywords });
+    } catch (err) {
+        console.error(`error : ${err}`);
+        res.status(500).json({ err });
+    }
+});
 
 module.exports = router;
