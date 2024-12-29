@@ -14,7 +14,15 @@ const { User } = db;        // db.User
 // 채팅 메시지 불러오기
 router.get('/', async (req, res) => {
   const token = req.headers['authorization'];
-  const tokenValue = token ? token.split(" ")[1].replace(/^"|"$/g, '') : null;
+  let tokenValue = null;
+
+  if (token) {
+    const parts = token.split(" ");
+    if (parts.length > 1) {
+      tokenValue = parts[1].replace(/^"|"$/g, '');
+    }
+  }
+
   const existUser = await User.findOne({ where: { token: tokenValue } });
   const ALLOnelines = await OneLine.findAll({
     attributes: ['id', 'content', 'emoji', 'userId'],
