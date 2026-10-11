@@ -9,3 +9,11 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model Notice {
+  id        Int      @id @default(autoincrement())
+  category  String
+  title     String
+  content   String
+  updatedAt DateTime @updatedAt
+}
