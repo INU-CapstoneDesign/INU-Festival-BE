@@ -32,7 +32,7 @@
 | POST | `/booth/comment/:id` | 인증 필요 |
 | PUT/DELETE | `/booth/:bid/comment/:cid` | 프론트 미사용 |
 | PUT | `/booth/liked/:id` | body `{ likeCount }` |
-| GET | `/timetable` | `{ performs }`. ⚠️ 프론트 `ApiService.fetchPerforms`는 `data.perform`을 읽고 있음 |
+| GET | `/timetable` | `{ performs }`. 프론트도 `performs`로 수정됨 (FE 커밋 전) |
 | GET | `/notice` | `{ notices }` |
 | GET / POST | `/sentence` | 방명록. GET은 `{ shouts }` |
 | GET | `/keywords` | 인기 키워드 |
@@ -78,7 +78,7 @@
 FE는 `refactor/api-service` 브랜치에서 API 호출을 `ApiService` 하나로 모으는 리팩터링을 진행 중이다 (`docs/API_REFACTOR_PLAN.md`, `docs/API_SPECIFICATION.md`). FE 작업에서는 사용자가 코드를 직접 작성하고 Claude는 안내만 한다.
 
 - [ ] `ApiService.ts`의 `/booth/top`을 `/booth/ranking`으로 수정 (`useFetchBoothsRanking.ts`도 같이)
-- [ ] `ApiService.fetchPerforms`의 `data.perform`을 `data.performs`로 수정
+- [x] `ApiService.fetchPerforms`의 `data.perform`을 `data.performs`로 수정 (2026-10-11 확인, 커밋 전)
 - [ ] `vercel.json`의 rewrite `"/(.*)" → "/"`가 `/api`까지 `index.html`로 보내고 있음. 백엔드를 직접 호출하도록 바꾸면서 `/api` 헤더 블록을 삭제
 - [ ] `.env.production`의 `VITE_API_URL`을 백엔드 주소로 바꾸고, 소켓용 `VITE_SOCKET_URL`을 추가 (`GuestBook.tsx`의 `io("/api")`는 경로가 아니라 네임스페이스로 해석됨)
 - [ ] `vite.config.ts`의 dev proxy target을 `http://localhost:4000`으로 바꾸고, `/legacy/api` prefix를 `rewrite`로 제거
@@ -87,7 +87,7 @@ FE는 `refactor/api-service` 브랜치에서 API 호출을 `ApiService` 하나�
 ## 6. 로드맵
 
 1. ✅ **서버 뼈대**: TS + Express 5, `GET /` → `{ message: "hello" }`
-2. ⬜ **DB 연결**: Prisma + PostgreSQL. 로컬 DB를 띄우는 방법(Docker 또는 Railway DB 직결)을 정하고, `schema.prisma`는 사용자가 작성하고 Claude가 리뷰
+2. 🔶 **DB 연결**: Prisma 7.10 + PostgreSQL 17(Homebrew). `Notice` 모델과 첫 마이그레이션 완료. 나머지 모델은 3단계에서 API와 함께 추가
 3. ⬜ **읽기 API**: `/notice`, `/timetable`, `/booth/all`, `/booth/ranking`, `/booth/:id`와 seed 데이터. 프론트를 연결해서 화면이 뜨는지 확인
 4. ⬜ **인증**: 앱센터 재학생 확인, JWT, `/user/lms`, `/user/me`, `/user/logout`, 인증 미들웨어
 5. ⬜ **쓰기 API**: 부스 댓글, 좋아요, 방명록 `POST /sentence`
@@ -113,5 +113,13 @@ FE는 `refactor/api-service` 브랜치에서 API 호출을 `ApiService` 하나�
 ## 7. 현재 진행 상황
 
 - 1단계 완료. `npm run dev`와 `npm run build && npm start` 모두 `{"message":"hello"}` 응답을 확인했다.
-- **아직 커밋하지 않았다.** 사용자가 직접 실행해서 확인하면 첫 커밋과 push를 진행한다 (사용자 확인 필요).
-- 그다음은 2단계 DB 연결이다. Prisma와 DB가 무엇인지 프론트에 비유해서 설명하는 것부터 시작한다.
+- 사용자가 직접 실행해서 확인했고, 첫 커밋(`chore: TS + Express 5 서버 뼈대`)을 `main`에 push했다.
+- 커밋 메시지는 `type: 요약` 형식(`feat:`, `fix:`, `refactor:`, `chore:`, `docs:` 등)을 쓴다.
+- 사용자의 백엔드 학습도 목적이다. 단계마다 정답 코드와 표 형식의 설명을 준다 (퀴즈나 빈칸 채우기는 하지 않는다).
+- 2단계 진행 중 (2026-10-11):
+  - 로컬 DB: Homebrew `postgresql@17`(`brew services`로 자동 실행), DB 이름 `inu_festival`, `.env`의 `DATABASE_URL`
+  - Node: Homebrew `postgresql@17` 설치가 icu4c를 바꿔 Homebrew Node가 깨졌다. nvm의 Node 22(기본값)로 전환했고 Homebrew `node`는 unlink 상태다
+  - Prisma 7.10.0으로 고정 (npm `latest` 태그가 8.0 rc라서). Prisma 7은 `prisma.config.ts`, `prisma-client` 생성기(`src/generated/prisma`, gitignore), 드라이버 어댑터(`@prisma/adapter-pg`)를 쓴다
+  - `src/db.ts`의 `prisma` 하나를 서버 전체에서 import 한다
+  - `Notice` 모델과 `add_notice` 마이그레이션 적용, 생성/조회/삭제 동작 확인
+- 다음: 커밋 후 3단계 `GET /notice` (응답에서 `id`를 문자열로, `noticeImgs`는 `NoticeImg` 관계 추가 후)
