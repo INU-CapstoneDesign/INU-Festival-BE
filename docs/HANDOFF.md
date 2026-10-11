@@ -87,8 +87,8 @@ FE는 `refactor/api-service` 브랜치에서 API 호출을 `ApiService` 하나�
 ## 6. 로드맵
 
 1. ✅ **서버 뼈대**: TS + Express 5, `GET /` → `{ message: "hello" }`
-2. 🔶 **DB 연결**: Prisma 7.10 + PostgreSQL 17(Homebrew). `Notice` 모델과 첫 마이그레이션 완료. 나머지 모델은 3단계에서 API와 함께 추가
-3. ⬜ **읽기 API**: `/notice`, `/timetable`, `/booth/all`, `/booth/ranking`, `/booth/:id`와 seed 데이터. 프론트를 연결해서 화면이 뜨는지 확인
+2. ✅ **DB 연결**: Prisma 7.10 + PostgreSQL 17(Homebrew). 모델은 각 API를 만들 때 함께 추가한다
+3. 🔶 **읽기 API** (`/notice` 완료): `/notice`, `/timetable`, `/booth/all`, `/booth/ranking`, `/booth/:id`와 seed 데이터. 프론트를 연결해서 화면이 뜨는지 확인
 4. ⬜ **인증**: 앱센터 재학생 확인, JWT, `/user/lms`, `/user/me`, `/user/logout`, 인증 미들웨어
 5. ⬜ **쓰기 API**: 부스 댓글, 좋아요, 방명록 `POST /sentence`
 6. ⬜ **Socket.io**: 방명록 실시간
@@ -122,4 +122,8 @@ FE는 `refactor/api-service` 브랜치에서 API 호출을 `ApiService` 하나�
   - Prisma 7.10.0으로 고정 (npm `latest` 태그가 8.0 rc라서). Prisma 7은 `prisma.config.ts`, `prisma-client` 생성기(`src/generated/prisma`, gitignore), 드라이버 어댑터(`@prisma/adapter-pg`)를 쓴다
   - `src/db.ts`의 `prisma` 하나를 서버 전체에서 import 한다
   - `Notice` 모델과 `add_notice` 마이그레이션 적용, 생성/조회/삭제 동작 확인
-- 다음: 커밋 후 3단계 `GET /notice` (응답에서 `id`를 문자열로, `noticeImgs`는 `NoticeImg` 관계 추가 후)
+- 3단계 진행 중:
+  - `GET /notice` 완료 (`src/routes/notice.ts`). `NoticeImg` 모델(Cascade 삭제) 추가. `id`는 문자열, `updatedAt`은 2024처럼 KST `"YYYY-MM-DD HH:mm:ss"` (`src/utils/date.ts`)
+  - seed: `npx prisma db seed` (`prisma/seed.ts`, 로컬 전용, 기존 공지를 지우고 다시 넣음)
+  - 프론트 연결 확인은 사용자가 FE `vite.config.ts` proxy를 `localhost:4000`으로 바꾼 뒤 진행
+- 다음: `/timetable` → `/booth/all`, `/booth/ranking`, `/booth/:id`
