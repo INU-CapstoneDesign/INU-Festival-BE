@@ -16,4 +16,13 @@ model Notice {
   title     String
   content   String
   updatedAt DateTime @updatedAt
+
+  noticeImgs NoticeImg[]
+}
+
+model NoticeImg {
+  id       Int    @id @default(autoincrement())
+  img      String
+  noticeId Int
+  notice   Notice @relation(fields: [noticeId], references: [id], onDelete: Cascade)
 }
