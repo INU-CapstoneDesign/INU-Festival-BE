@@ -1,0 +1,19 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "autoincrement",
+    "fkey",
+    "Imgs",
+    "kaori",
+    "mecab",
+    "Oneline",
+    "pkey"
+  ],
+  "ignorePaths": [
+    "node_modules",
+    "dist",
+    "src/generated",
+    "package-lock.json"
+  ]
+}
